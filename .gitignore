@@ -1,0 +1,7 @@
+vdpow
+*.o
+*~
+*.kate-swp
+*.swp
+*.orig
+*.rej
