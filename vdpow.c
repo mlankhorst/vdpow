@@ -12,4 +12,23 @@ int main(int argc, char *argv[]) {
    display = XOpenDisplay(NULL);
    root = XDefaultRootWindow(display);
    window = XCreateSimpleWindow(display, root, 0, 0, output_width, output_height, 0, 0, 0);
+
+   XSelectInput(display, window, ExposureMask | KeyPressMask);
+   XMapWindow(display, window);
+   XSync(display, 0);
+
+   while (1) {
+      XEvent ev;
+      XNextEvent(display, &ev);
+      switch (ev.type) {
+         case Expose: /* Draw */ break;
+         case KeyPress: goto out;
+      }
+   }
+
+out:
+   XDestroyWindow(display, window);
+   XCloseDisplay(display);
+   return 0;
 }
+
