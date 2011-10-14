@@ -28,8 +28,6 @@ int main(int argc, char *argv[]) {
    int i;
 
    VdpVideoMixerFeature mixer_features[] = {
-      VDP_VIDEO_MIXER_FEATURE_SHARPNESS,
-      VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9
    };
    VdpVideoMixerParameter mixer_parameters[] = {
       VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_WIDTH,
