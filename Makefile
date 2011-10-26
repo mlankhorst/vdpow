@@ -1,4 +1,4 @@
-CFLAGS ?= -g -O2
+CFLAGS ?= -g -O2 -Wall
 LIBS = -lX11 -lvdpau
 OBJS := vdpow.o
 

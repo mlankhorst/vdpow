@@ -9,10 +9,7 @@
 
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof(*a))
 
-static const int output_width = 64;
-static const int output_height = 64;
-static const int input_width = 64;
-static const int input_height = 64;
+#include "swan.h"
 
 VdpDevice dev;
 
@@ -25,6 +22,9 @@ int main(int argc, char *argv[]) {
    VdpVideoSurface surf[8];
    VdpOutputSurface osurf[8];
    VdpVideoMixer mixer;
+   VdpProcamp camp = { VDP_PROCAMP_VERSION, 0., 1., 1., 0. };
+   VdpCSCMatrix mat;
+
    int i;
 
    VdpVideoMixerFeature mixer_features[] = {
@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
    assert(ret == VDP_STATUS_OK);
 
    load_vdpau(dev);
+   vdp_generate_csc_matrix(&camp, VDP_COLOR_STANDARD_SMPTE_240M, &mat);
 
 #define ok(a) do { ret = a; if (ret != VDP_STATUS_OK) { fprintf(stderr, "%s\n", vdp_get_error_string(ret)); return 1; } } while (0)
 
@@ -63,7 +64,17 @@ int main(int argc, char *argv[]) {
    ok(vdp_video_mixer_create(dev, ARRAY_SIZE(mixer_features), mixer_features,
                              ARRAY_SIZE(mixer_parameters), mixer_parameters, mixer_values, &mixer));
    ok(vdp_decoder_create(dev, VDP_DECODER_PROFILE_MPEG1, input_width, input_height, 2, &dec));
+   vdp_decoder_destroy(dec);
+   ok(vdp_decoder_create(dev, VDP_DECODER_PROFILE_MPEG2_MAIN, input_width, input_height, 2, &dec));
 
+   {
+      VdpBitstreamBuffer buffer = {
+         .struct_version = VDP_BITSTREAM_BUFFER_VERSION,
+         .bitstream = swan,
+         .bitstream_bytes = sizeof(swan)
+      };
+      vdp_decoder_render(dec, surf[i], &info, 1, &buffer);
+   }
    while (1) {
       XEvent ev;
       XNextEvent(display, &ev);
