@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
          .bitstream = swan,
          .bitstream_bytes = sizeof(swan)
       };
-      vdp_decoder_render(dec, surf[i], &info, 1, &buffer);
+      vdp_decoder_render(dec, surf[0], &info, 1, &buffer);
    }
    while (1) {
       XEvent ev;
